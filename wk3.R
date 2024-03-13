@@ -83,3 +83,19 @@ summary(a)
 
 mygg <- ggplot(mtcars,aes(x = hp/wt, y= qsec, col=am))
 mygg + geom_point()
+
+
+######EXERCISE 3
+#create a ggplot that includes the following elements:
+#A scatter plot of MPG versus weight (wt), similar to what's already in the 
+#script, but this time facet the plot by the number of gears (gear).
+#Customize the plot using a different ggplot2 theme and adjust the color 
+#scale to represent the number of cylinders (cyl).
+#Add a smooth line (regression line or LOESS) to each facet 
+#to illustrate the trend.
+
+######EXERCISE 4
+#Perform a t-test to compare the MPG of 4-cylinder cars versus 6-cylinder cars. 
+#Before conducting the t-test visualize the distribution of MPG  for both groups 
+#using box plots or violin plots.
+#Provide an interpretion of the results of the t-test in the context of the visualizations.
