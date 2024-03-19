@@ -3,7 +3,7 @@ print("Ok ln2okln2, ln 2 ")
 getwd()
 setwd("C:/Users/Charl/OneDrive/Documents/GitHub/DMA2")
 getwd()
-
+#install.packages('X')
 library(ggplot2)
 library(datasets)
 
