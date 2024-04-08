@@ -1,0 +1,71 @@
+-- student (student_id, first_name, last_name, email)
+CREATE TABLE Student (
+  student_id INT PRIMARY KEY, --Combines the UNIQUE and NOT NULL constraints
+  first_name VARCHAR(30),
+  last_name VARCHAR(40),
+  email VARCHAR(100),
+  age INT
+);
+
+INSERT INTO Student(student_id, first_name, last_name, email, age) VALUES
+  (10, 'Mario', 'Bianchi', 'a@a.com', 32),
+  (20, 'Luigi', 'Rossi', 'b@b.com', 22),
+  (30, 'Peach', 'Gialli', 'c@c.com', 20);
+
+SELECT * FROM Student;
+
+CREATE TABLE Class (
+  course_id INT PRIMARY KEY,
+  name VARCHAR(100),
+  class_year INT
+);
+
+INSERT INTO Class(course_id, name, class_year) VALUES
+  (10, 'Applied jeff', 1994),
+  (20, 'Jeff studies', 1998);
+INSERT INTO Class(course_id, name, class_year) VALUES
+  (30, 'Quantum jeff', 1995);
+SELECT * FROM CLASS;
+
+CREATE TABLE Attends (
+  student_id INT REFERENCES Student(student_id),
+  course_id INT REFERENCES Class(course_id),
+  attending_year INT,
+  PRIMARY KEY(student_id, course_id)
+);
+
+INSERT INTO Attends(student_id, course_id, attending_year) VALUES
+  (10, 10, 2796),
+  (10, 20, 2797),
+  (20,10,2796),
+  (10, 30, 2797),
+  (30, 10, 2796);
+
+SELECT * FROM Attends;
+
+--Query execution plan:
+--1. FROM table
+--2. JOIN
+--3. WHERE
+--4. GROUP BY
+--5. SELECT 
+
+--INNER JOIN
+SELECT S.first_name, S.last_name,S.age, C.name
+FROM Student AS S
+INNER JOIN Attends AS A --To shorten and make clearer the joins 
+INNER JOIN Class AS C --To shorten and make clearer the joins
+ON A.course_id = C.course_id --Join parameter
+ON S.student_id = A.student_id --Join parameter
+WHERE C.name LIKE '%jeff%'; --Checks for if the string 'jeff' is in the name
+
+--GROUP BY
+SELECT AVG(S.age) AS avg_age, C.name -- AVG tells the query how to condense the information
+FROM Student AS S
+INNER JOIN Attends AS A --To shorten and make clearer the joins 
+INNER JOIN Class AS C --To shorten and make clearer the joins
+ON A.course_id = C.course_id --Join parameter
+ON S.student_id = A.student_id --Join parameter
+WHERE C.name LIKE '%jeff%'
+GROUP BY C.course_id; --Condenses so each course_id would only appear once 
+--Note that course_id isn't even in the final table, but it can still be used for grouping
