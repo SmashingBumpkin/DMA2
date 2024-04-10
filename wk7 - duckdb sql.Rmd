@@ -16,6 +16,8 @@ library(dplyr, quietly = T)
 library(duckdb, quietly = T)
 library(ggplot2, quietly = T)
 ```
+Setup the database
+
 ```{r, Connecting to db}
 #dbConnect()
 #create db called titanic
@@ -24,5 +26,13 @@ con <- dbConnect(duckdb(), dbname = "titanic.db")
 #load the titanic data
 titanic_data <- read.csv("titanic - train.csv")
 
+#db table
+dbWriteTable(con, "passengers", titanic_data, row.names=F)
 
+```
+
+Get the adult passengers from the table (a nice simple way  to test its working)
+
+```{r, performing sql query}
+df_adult_passengers <- dbGetQuery(con, "SELECT * FROM passengers WHERE age > 18")
 ```
