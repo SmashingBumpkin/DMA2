@@ -12,9 +12,11 @@ Setup the env
 #install.packages("duckdb")
 #install.packages("dplyr")
 #install.packages("tidyverse")
+install.packages("patchwork")
 library(dplyr, quietly = T)
 library(duckdb, quietly = T)
 library(ggplot2, quietly = T)
+library(patchwork, quietly = T)
 ```
 Setup the database
 
@@ -35,4 +37,48 @@ Get the adult passengers from the table (a nice simple way  to test its working)
 
 ```{r, performing sql query}
 df_adult_passengers <- dbGetQuery(con, "SELECT * FROM passengers WHERE age > 18")
+df_adult_passengers <- as.data.frame(df_adult_passengers)
+df_adult_passengers
+```
+WE can also filter with dplyr, keeping only the adults who survived
+
+```{r, filtering with dplyr}
+#dplyr queries are structured like "statement1 %>% statement2"
+filtered_data <- df_adult_passengers %>%
+  filter(Survived == 1 & Age >18)
+
+# compute average
+mean_age <- filtered_data %>% 
+  group_by(Sex) %>%
+  summarize(mean_age = mean(Age, na.rm = T))#na.rm removes null values
+
+filtered_data_2 <- filtered_data %>% filter(is.na(Cabin)== F) # looks for null values
+filtered_data_2 <- filtered_data %>% filter(Cabin== "") # empty string != null
+```
+
+Now we can create some graphs of the distribution using ggplot2
+
+```{r, Survival plots}
+
+age_plot <- ggplot(filtered_data, aes(x = Age, group = Sex, fill = Sex)) + # using the filtered data, bind x to age, seperate by Sex and apply different colors according to Sex
+              geom_histogram(binwidth = 5, color = "black", position = "Dodge") +
+  #geom_histogram sets the bin widths, and the key colours
+              labs(title = "Age Distribution of Surviving Passengers over 18 by sex",
+                   x = "Age",
+                   y = "Frequency") # labs customizes the labels
+
+# Plot survival rate by passenger class
+class_survival_plot <- ggplot(titanic_data, aes(x = factor(Pclass), fill = factor(Survived))) +
+                          geom_bar(position = "dodge", color = "black") +
+                          scale_fill_manual(values = c("red", "green")) +
+                          labs(title = "Survival Rate by Passenger Class",
+                               x = "Passenger Class",
+                               y = "Count",
+                               fill = "Survived")
+```
+
+Now we will use patchwork to join together multiple plots
+```{r, Patchwork plots} 
+compound_plt = age_plot + class_survival_plot
+
 ```

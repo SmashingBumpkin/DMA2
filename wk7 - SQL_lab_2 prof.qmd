@@ -1,0 +1,89 @@
+---
+title: "Lab_R_SQL_dplyr"
+author: "Gabriele Etta"
+format: html
+editor: visual
+---
+
+# Lab 10/4/2024
+
+In today's lab we will cover the following topics
+
+-   Setup a *duckDB* database
+-   Interact with a *duckDB* database using R
+-   Manage dataframes using *dplyr* package
+-   Visualize results with *ggplot2*
+
+To replicate this lab, duckDB needs to be installed on your laptop.
+
+# Setup libraries and connections
+
+We begin by installing the required packages
+
+```{r}
+install.packages("duckdb")
+install.packages("dplyr")
+install.packages("ggplot2")
+library(dplyr, quietly = T)
+library(duckdb, quietly = T)
+library(ggplot2, quietly = T)
+```
+
+Next, we connect to the duckDB database previously created
+
+```{r, connect to duckDB}
+# Create a DUCKDB database called titanic
+con <- dbConnect(duckdb::duckdb(), dbname = "titanic.db")
+
+# Load titanic data
+titanic_data <- read.csv("titanic.csv")
+
+# Create a titanic data and add the tuples from the CSV file 
+dbWriteTable(con, "passengers", titanic_data, row.names = FALSE)
+```
+
+Get the adult passengers from *passengers* table
+
+```{r, performing SQL query}
+df_adult_passengers <- dbGetQuery(con, "SELECT * FROM passengers WHERE age > 18")
+
+df_adult_passengers <- as.data.frame(df_adult_passengers)
+df_adult_passengers
+```
+
+We now filter the adult passengers by using dplyr, keeping only those adults who survived
+
+```{r, filtering with dplyr}
+  filtered_data <- df_adult_passengers %>%
+                    filter(Survived == 1 & Age > 18)
+  
+  # Compute average
+  mean_age <- filtered_data %>%
+                summarize(mean_age = mean(Age, na.rm = TRUE))
+  
+  mean_age
+```
+
+Finally, we visualize distribution and survival rates using ggplot2
+
+```{r, visualize plots}
+
+age_plot <- ggplot(filtered_data, aes(x = Age)) +
+              geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
+              labs(title = "Age Distribution of Surviving Passengers over 18",
+                   x = "Age",
+                   y = "Frequency")
+
+# Plot survival rate by passenger class
+class_survival_plot <- ggplot(titanic_data, aes(x = factor(Pclass), fill = factor(Survived))) +
+                          geom_bar(position = "dodge", color = "black") +
+                          scale_fill_manual(values = c("red", "green")) +
+                          labs(title = "Survival Rate by Passenger Class",
+                               x = "Passenger Class",
+                               y = "Count",
+                               fill = "Survived")
+
+# Display plots
+print(age_plot)
+print(class_survival_plot)
+```
