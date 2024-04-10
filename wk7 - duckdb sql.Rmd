@@ -1,0 +1,28 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-04-10"
+---
+
+# SQL with duck db
+
+Setup the env
+
+```{R installations}
+#install.packages("duckdb")
+#install.packages("dplyr")
+#install.packages("tidyverse")
+library(dplyr, quietly = T)
+library(duckdb, quietly = T)
+library(ggplot2, quietly = T)
+```
+```{r, Connecting to db}
+#dbConnect()
+#create db called titanic
+con <- dbConnect(duckdb(), dbname = "titanic.db")
+
+#load the titanic data
+titanic_data <- read.csv("titanic - train.csv")
+
+
+```
