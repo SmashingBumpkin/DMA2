@@ -18,6 +18,7 @@ library(duckdb, quietly = T)
 library(ggplot2, quietly = T)
 library(patchwork, quietly = T)
 ```
+
 Setup the database
 
 ```{r, Connecting to db}
@@ -33,13 +34,14 @@ dbWriteTable(con, "passengers", titanic_data, row.names=F)
 
 ```
 
-Get the adult passengers from the table (a nice simple way  to test its working)
+Get the adult passengers from the table (a nice simple way to test its working)
 
 ```{r, performing sql query}
 df_adult_passengers <- dbGetQuery(con, "SELECT * FROM passengers WHERE age > 18")
 df_adult_passengers <- as.data.frame(df_adult_passengers)
 df_adult_passengers
 ```
+
 WE can also filter with dplyr, keeping only the adults who survived
 
 ```{r, filtering with dplyr}
@@ -78,7 +80,8 @@ class_survival_plot <- ggplot(titanic_data, aes(x = factor(Pclass), fill = facto
 ```
 
 Now we will use patchwork to join together multiple plots
-```{r, Patchwork plots} 
+
+```{r, Patchwork plots}
 compound_plt = age_plot + class_survival_plot
 
 ```
