@@ -1,0 +1,8 @@
+id,name,age,can_vote,birth_year,age_category
+1,John,25,FALSE,1999,Young
+2,Jane,33,TRUE,1991,Adult
+3,Mike,28,TRUE,1996,Young
+4,Emily,37,TRUE,1987,Adult
+5,David,42,TRUE,1982,Adult
+6,David,70,TRUE,1954,Adult
+7,Joon,13,,,Kid
