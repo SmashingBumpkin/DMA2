@@ -47,5 +47,6 @@ dt[, .(.N, prop_m = mean(gender1 == "male")),
           by = .(afam, hispanic, other)]
 
 dt
+
 #10:
 dt[,.(total = sum(morekids=="yes"),mean = mean(morekids=="yes")) ,by = .(gender1, gender2)]
