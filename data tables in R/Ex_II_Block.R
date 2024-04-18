@@ -15,11 +15,12 @@ library(data.table)
 
 # Load data with fread
 getwd()
-dir = "/Users/walter/Desktop/DATA/"
+dir = "C:/Users/Charl/Documents/GitHub/DMA2/data tables in R/"
 setwd(dir)
 tc <- fread("toy_cor.csv")
 
 head(tc)
+dt <- data.table(tc)
 ####################
 
 #                  #
@@ -29,8 +30,10 @@ head(tc)
 #                  #
 
 ####################
-#Using one line of code print out the most common car model in the data, and the number of times it appears.
-tc[, .N, by = Model][order(N)][.N]
+#Using one line of code print out the most common car model in the data, and the 
+#number of times it appears.
+
+model_frequency = dt[,.N,by=.(Model)][order(-N)]
 ##                                   Model   N
 ## 1: 1.6 16V HATCHB LINEA TERRA 2/3-Doors 109
 # Or
@@ -49,8 +52,7 @@ tc[, .N, by = Model][which.max(N)]
 ####################
 #Print out the mean and median price of the 10 most common models.
 
-tc[, .(.N, medianPrice = median(Price), meanPrice = mean(Price)),
-   by = Model][order(-N)][1:10]
+dt[,.(.N,mean(Price),median(Price)),by=.(Model)][order(-N)][0:10]
 ##                                      Model   N medianPrice meanPrice
 ##  1:   1.6 16V HATCHB LINEA TERRA 2/3-Doors 109        8750  8578.440
 ##  2:   1.3 16V HATCHB LINEA TERRA 2/3-Doors  84        7950  8079.167
@@ -73,6 +75,10 @@ tc[, .(.N, medianPrice = median(Price), meanPrice = mean(Price)),
 ####################
 #Delete all columns that have Guarantee in its name.
 
+
+
+
+
 tc[, grep("Guarantee", names(tc)) := NULL]
 
 
@@ -85,7 +91,12 @@ tc[, grep("Guarantee", names(tc)) := NULL]
 #                  #
 
 ####################
-#Add a new column which is the squared deviation of price from the average price of cars the same color.
+#Add a new column which is the squared deviation of price from the average price 
+#of cars the same color.
+
+
+
+
 
 tc[, sq_dev_bycol := (Price - mean(Price))^2,  by = Color]
 
