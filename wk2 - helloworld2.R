@@ -175,3 +175,4 @@ peopleMAT <- as.matrix(people)
 peopleMAT
 
 apply(peopleMAT,2,mean) #not a list!
+
